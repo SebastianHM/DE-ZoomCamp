@@ -4,16 +4,28 @@
 --4.
 -- SELECT tip_amount, tpep_pickup_datetime  FROM yellow_taxi_data WHERE tip_amount=(SELECT MAX(tip_amount) FROM yellow_taxi_data)
 
---5.
--- SELECT "DOLocationID", COUNT("PULocationID") FROM yellow_taxi_data 
--- WHERE "PULocationID" = 43 
--- GROUP BY "DOLocationID"
--- ORDER BY COUNT("PULocationID") DESC
--- limit 1
+--5
+--SELECT do_loc."Zone" , COUNT(*) 
+--FROM yellow_taxi_data 
+--LEFT JOIN taxi_zones_data as do_loc 
+--ON yellow_taxi_data."DOLocationID" = do_loc."LocationID"
+--LEFT JOIN taxi_zones_data as pu_loc
+--ON yellow_taxi_data."PULocationID" = pu_loc."LocationID"
+--WHERE pu_loc."Zone" = 'Central Park'
+--AND yellow_taxi_data.tpep_pickup_datetime >= '2021-01-14 00:00:00'
+--AND yellow_taxi_data.tpep_pickup_datetime < '2021-01-15 00:00:00'
+--GROUP BY do_loc."Zone"
+--ORDER BY COUNT(*) DESC
+--LIMIT 1;
 
---6.
--- SELECT "PULocationID","DOLocationID", AVG(total_amount) FROM yellow_taxi_data 
--- GROUP BY "PULocationID", "DOLocationID"
--- ORDER BY AVG(total_amount) DESC
--- limit 1--password=root --host=localhost --database=ny_taxi --table=yellow_taxi_data --url="https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2021-01.csv" --port=5432
 
+--6
+--SELECT CONCAT(COALESCE(pu_loc."Zone",'Unknown'), ' / ', COALESCE(do_loc."Zone",'Unknown')), AVG(total_amount)
+--FROM yellow_taxi_data 
+--LEFT JOIN taxi_zones_data as pu_loc
+--ON yellow_taxi_data."PULocationID" = pu_loc."LocationID"
+--LEFT JOIN taxi_zones_data as do_loc
+--ON yellow_taxi_data."DOLocationID" = do_loc."LocationID"
+--GROUP BY pu_loc."Zone", do_loc."Zone"
+--ORDER BY AVG(total_amount) DESC
+--LIMIT 1;
